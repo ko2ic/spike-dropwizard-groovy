@@ -1,0 +1,78 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+apply plugin: 'gradle-one-jar'
+apply plugin: 'application'
+
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+// UTF-8 should be standard by now. So use it!
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+// The main class of the application
+mainClassName = 'com.github.ko2ic.HelloWorldApplication'
+
+// Add Gradle OneJar Plugin, see https://github.com/rholder/gradle-one-jar
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.github.rholder:gradle-one-jar:1.0.4'
+    }
+}
+
+// Set our project variables
+project.ext {
+    dropwizardVersion = '0.7.0'
+    dropwizardModulesVersion = '0.7.0-1'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile (
+    	'io.dropwizard.modules:dropwizard-java8:' + dropwizardModulesVersion,
+    	'io.dropwizard.modules:dropwizard-java8-auth:' + dropwizardModulesVersion,
+    	'io.dropwizard.modules:dropwizard-java8-jdbi:' + dropwizardModulesVersion,
+        'io.dropwizard:dropwizard-core:' + dropwizardVersion,
+        'io.dropwizard:dropwizard-assets:' + dropwizardVersion,
+        'io.dropwizard:dropwizard-views-freemarker:' + dropwizardVersion,
+        'io.dropwizard:dropwizard-views-mustache:' + dropwizardVersion,
+        'io.dropwizard:dropwizard-auth:' + dropwizardVersion,
+        'io.dropwizard:dropwizard-migrations:' + dropwizardVersion,
+        'io.dropwizard:dropwizard-hibernate:' + dropwizardVersion,
+        'io.dropwizard:dropwizard-jdbi:' + dropwizardVersion,
+        'com.h2database:h2:1.3.175',
+        'org.codehaus.groovy:groovy-all:2.3.8'    
+    )
+
+    testCompile(
+        'io.dropwizard:dropwizard-testing:' + dropwizardVersion,
+        'org.spockframework:spock-core:0.7-groovy-2.0'
+    )
+}
+
+// Configure the oneJar task
+task oneJar(type: OneJar) {
+    mainClass = mainClassName
+}
+
+// Configure the run task to start the Dropwizard service
+run {
+    args 'server', './example.yml'
+
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.2.1'
+}
+
+artifacts {
+    oneJar
+}
