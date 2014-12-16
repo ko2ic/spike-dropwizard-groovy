@@ -88,7 +88,7 @@ public class PeopleResourceIntegrationTest {
     }
 
     private static Database createDatabase() throws SQLException, DatabaseException {
-        DataSourceFactory dataSourceFactory = RULE.getConfiguration().getDataSourceFactory();
+        DataSourceFactory dataSourceFactory = RULE.getConfiguration().getDatabase();
         Properties info = new Properties();
         info.setProperty("user", dataSourceFactory.getUser());
         info.setProperty("password", dataSourceFactory.getPassword());
